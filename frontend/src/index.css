@@ -1,0 +1,409 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 320px;
+  min-height: 100vh;
+  color: #213547;
+  background-color: #ffffff;
+  padding-top: 20px;
+}
+
+a {
+  color: #646cff;
+}
+a:hover {
+  color: #747bff;
+}
+
+button {
+  background-color: #f9f9f9;
+  color: #213547;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+form.auth-form {
+  max-width: 400px;
+  margin: 2em auto;
+  padding: 2em;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+form.auth-form label {
+  color: #000;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+form.auth-form input,
+form.auth-form select {
+  width: 100%;
+  padding: 0.5em;
+  margin-bottom: 1.5em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+  background-color: white;
+  color: #000;
+}
+
+form.auth-form input:focus,
+form.auth-form select:focus {
+  border-color: #646cff;
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1em;
+  margin-top: 1em;
+}
+
+.message-box {
+  padding: 0.8em;
+  margin-bottom: 1em;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.message-box.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.message-box.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.main-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-table th,
+.main-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  color: #213547;
+}
+
+.main-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.main-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.main-table button {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: #213547;
+}
+.main-table button:hover {
+  opacity: 0.7;
+}
+
+.bar {
+  display: flex;
+  gap: 1em;
+  background: #f4f4f4;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.bar-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.bar-link.aktywny {
+  background: #007bff;
+  color: white;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+.team-grid label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+.team-grid input {
+  width: 100%;
+  padding: 0.4em;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Dark mode */
+body.dark {
+  background-color: #242424;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+body.dark a {
+  color: #646cff;
+}
+body.dark a:hover {
+  color: #535bf2;
+}
+
+body.dark button {
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid transparent;
+}
+body.dark button:hover {
+  border-color: #646cff;
+}
+
+body.dark form.auth-form {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark form.auth-form label {
+  color: white;
+}
+
+body.dark form.auth-form input,
+body.dark form.auth-form select {
+  background-color: #2c2c2c;
+  color: white;
+  border: 1px solid #ccc;
+}
+
+body.dark form.auth-form input:focus,
+body.dark form.auth-form select:focus {
+  border-color: #646cff;
+  outline: none;
+}
+
+body.dark .main-table {
+  background: #333;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+body.dark .main-table th,
+body.dark .main-table td {
+  border-bottom: 1px solid #555;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+body.dark .main-table th {
+  background-color: #444;
+}
+
+body.dark .main-table tr:hover {
+  background-color: #555;
+}
+
+body.dark .main-table button {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+body.dark .bar {
+  background: #333;
+}
+
+body.dark .bar-link {
+  color: #ddd;
+}
+
+body.dark .bar-link.aktywny {
+  background: #646cff;
+  color: white;
+}
+
+body.dark .message-box.error {
+  background-color: #5a1a1a;
+  color: #f1c4c4;
+  border-color: #8e4444;
+}
+
+body.dark .message-box.success {
+  background-color: #1d3c24;
+  color: #c8f2d0;
+  border-color: #3c8154;
+}
+
+.message-box-wrapper {
+  margin-bottom: 1em;
+  min-height: unset;
+  height: auto;
+}
+
+.message-box {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+.message-box.error {
+  background-color: #ffcccc;
+  color: #a10000;
+}
+
+.message-box.success {
+  background-color: #ccffcc;
+  color: #006600;
+}
+
+.turniej-nazwa {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-bottom: 0.2em;
+  color: #646cff;
+}
+
+body.dark .turniej-nazwa {
+  color: #8f8fff;
+}
+
+.tournament-buttons {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-bottom: 1.5em;
+}
+
+.tournament-buttons button {
+  padding: 0.4em 1.2em;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tournament-buttons button:hover {
+  background-color: #4c52cc;
+}
+
+.tournament-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.home-container {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 2em 1em;
+}
+
+.home-description {
+  font-size: 1.1em;
+  margin-bottom: 1.5em;
+}
+
+.home-list {
+  text-align: left;
+  margin: 0 auto;
+  max-width: 500px;
+  font-size: 1em;
+  padding-left: 1.2em;
+}
+
+.home-button-wrapper {
+  margin-top: 3em;
+}
+
+.home-button {
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 1.2em;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: #0056b3;
+}
+
+body.dark .home-button {
+  background-color: #4c52cc;
+  color: white;
+}
+
+body.dark .home-button:hover {
+  background-color: #3a3fc2;
+}
+
+.team-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+}
+
+.team-form input {
+  flex: 1;
+  min-width: 200px;
+}

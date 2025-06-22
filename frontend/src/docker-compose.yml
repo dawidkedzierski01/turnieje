@@ -1,0 +1,22 @@
+
+services:
+  backend:
+    build: ./backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: 'django-insecure-q@apdy@480q%mw!%surx638qnwo&9#h_%s$f5pxnh!&)j)4sf7'
+      DEBUG: '1'
+      ALLOWED_HOSTS: 'localhost,127.0.0.1'
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
