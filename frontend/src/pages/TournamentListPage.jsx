@@ -72,7 +72,7 @@ function TournamentListPage() {
 
     return {
       teams: { icon: statusIcon(hasTeams), path: `/turniej/${turniej.id}/druzyny` },
-      schedule: { icon: statusIcon(hasMatches), path: `/planowanie-meczy/${turniej.id}` },
+      schedule: { icon: statusIcon(hasMatches), path: `/turniej/${turniej.id}/planowanie-meczy` },
       details: { icon: statusIcon(allMatchDetails, someMatchDetails), path: `/turniej/${turniej.id}/szczegoly` },
       results: { icon: statusIcon(allScores, someScores), path: `/turniej/${turniej.id}/wyniki` },
       table: turniej.typ === 'puchar' ? `/turniej/${turniej.id}/drabinka` : `/turniej/${turniej.id}/tabela`,
@@ -118,11 +118,11 @@ function TournamentListPage() {
   });
 
   return (
-    <div>
-      <h1>Lista turniejów</h1>
+    <div className="page-container">
+      <h2 className="page-title">Lista turniejów</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <div style={{ marginBottom: '1em' }}>
+      <div className="filters" style={{ marginBottom: '1em', display: 'flex', gap: '1em', flexWrap: 'wrap' }}>
         <input
           type="text"
           placeholder="Szukaj..."
@@ -130,28 +130,26 @@ function TournamentListPage() {
           onChange={e => setSearch(e.target.value)}
         />
 
-        <label style={{ marginLeft: '1em' }}>
+        <label>
           <input
             type="checkbox"
             checked={showLiga}
             onChange={() => setShowLiga(prev => !prev)}
-          />
-          Pokaż ligi
+          /> Ligi
         </label>
 
-        <label style={{ marginLeft: '1em' }}>
+        <label>
           <input
             type="checkbox"
             checked={showPuchar}
             onChange={() => setShowPuchar(prev => !prev)}
-          />
-          Pokaż puchary
+          /> Puchary
         </label>
 
-        <select onChange={e => setSortKey(e.target.value)} style={{ marginLeft: '1em' }}>
+        <select onChange={e => setSortKey(e.target.value)} value={sortKey}>
           <option value="nazwa">Sortuj: alfabetycznie</option>
-          <option value="data-rosnaco">Sortuj: po dacie (od najstarszych)</option>
-          <option value="data-malejaco">Sortuj: po dacie (od najnowszych)</option>
+          <option value="data-rosnaco">Sortuj: po dacie (rosnąco)</option>
+          <option value="data-malejaco">Sortuj: po dacie (malejąco)</option>
         </select>
       </div>
 
@@ -163,12 +161,12 @@ function TournamentListPage() {
             <tr>
               <th>Nazwa</th>
               <th>Typ</th>
-              <th>Liczba drużyn</th>
+              <th>Drużyn</th>
               <th>Drużyny</th>
               <th>Harmonogram</th>
               <th>Szczegóły</th>
               <th>Wyniki</th>
-              <th>Widok wyników</th>
+              <th>Widok</th>
               <th>Usuń</th>
             </tr>
           </thead>
@@ -181,34 +179,29 @@ function TournamentListPage() {
                   <td>{t.typ}</td>
                   <td>{t.liczba_druzyn}</td>
                   <td>
-                    <a onClick={() => navigate(status.teams.path)} style={{ cursor: 'pointer' }}>
-                      {status.teams.icon}
-                    </a>
+                    <button onClick={() => navigate(status.teams.path)}>{status.teams.icon}</button>
                   </td>
                   <td>
-                    <a onClick={() => navigate(status.schedule.path)} style={{ cursor: 'pointer' }}>
-                      {status.schedule.icon}
-                    </a>
+                    <button onClick={() => navigate(status.schedule.path)}>{status.schedule.icon}</button>
                   </td>
                   <td>
-                    <a onClick={() => navigate(status.details.path)} style={{ cursor: 'pointer' }}>
-                      {status.details.icon}
-                    </a>
+                    <button onClick={() => navigate(status.details.path)}>{status.details.icon}</button>
                   </td>
                   <td>
-                    <a onClick={() => navigate(status.results.path)} style={{ cursor: 'pointer' }}>
-                      {status.results.icon}
-                    </a>
+                    <button onClick={() => navigate(status.results.path)}>{status.results.icon}</button>
                   </td>
                   <td>
-                    <a onClick={() => navigate(status.table)} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                    <button
+                      onClick={() => navigate(status.table)}
+                      style={{ textDecoration: 'underline' }}
+                    >
                       {t.typ === 'puchar' ? 'Drabinka' : 'Tabela'}
-                    </a>
+                    </button>
                   </td>
                   <td>
-                    <a onClick={() => handleDelete(t.id)} style={{ cursor: 'pointer', color: 'red' }}>
+                    <button onClick={() => handleDelete(t.id)} style={{ color: 'red' }}>
                       Usuń
-                    </a>
+                    </button>
                   </td>
                 </tr>
               );

@@ -10,12 +10,16 @@ const ThemeToggle = () => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   return (
-    <button onClick={toggleTheme} style={{ fontWeight: 'bold', cursor: 'pointer' }}>
-      {theme === 'dark' ? ' Tryb ciemny' : ' Tryb jasny'}
+    <button
+      onClick={toggleTheme}
+      className="bar-link"
+      style={{ padding: '8px 16px' }}
+    >
+      {theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}
     </button>
   );
 };

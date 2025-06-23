@@ -23,14 +23,12 @@ class DruzynaSerializer(serializers.ModelSerializer):
         nazwa = data['nazwa']
         is_update = self.instance is not None
 
-        # Sprawdź unikalność tylko jeśli to dodawanie lub zmiana nazwy
         if not is_update or self.instance.nazwa != nazwa:
             if Druzyna.objects.filter(turniej=turniej, nazwa=nazwa).exclude(id=getattr(self.instance, 'id', None)).exists():
                 raise serializers.ValidationError(
                     f"Drużyna o nazwie '{nazwa}' już istnieje w tym turnieju."
                 )
 
-        # Limit sprawdzaj tylko przy dodawaniu
         if not is_update:
             if turniej.druzyny.count() >= turniej.liczba_druzyn:
                 raise serializers.ValidationError(

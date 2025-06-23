@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import CreateTournamentBar from '../components/CreateTournamentBar';
 import TournamentActionButtons from '../components/TournamentActionButtons';
+import MessageBox from '../components/MessageBox';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,14 +10,16 @@ function TournamentDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [mecze, setMecze] = useState([]);
+  const [turniej, setTurniej] = useState(null);
   const [turniejInfo, setTurniejInfo] = useState({
     data_rozpoczecia: '',
     data_zakonczenia: '',
     miejsce: '',
   });
+  const [mecze, setMecze] = useState([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [info, setInfo] = useState(null);
   const [filterKolejka, setFilterKolejka] = useState('');
 
   const handle401 = () => {
@@ -58,6 +61,7 @@ function TournamentDetailsPage() {
       if (res.status === 401) return handle401();
       if (!res.ok) throw new Error();
       const data = await res.json();
+      setTurniej(data);
       setTurniejInfo({
         data_rozpoczecia: data.data_rozpoczecia || '',
         data_zakonczenia: data.data_zakonczenia || '',
@@ -71,31 +75,67 @@ function TournamentDetailsPage() {
   const zapiszWszystko = async () => {
     setError(null);
     setSuccess(null);
-    try {
-      await fetch(`${API_URL}/api/turnieje/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access')}`,
-        },
-        body: JSON.stringify(turniejInfo),
-      });
+    setInfo(null);
 
-      for (const mecz of mecze) {
-        await fetch(`${API_URL}/api/mecze/${mecz.id}/`, {
+    const initialTurniej = {
+      data_rozpoczecia: turniej.data_rozpoczecia || '',
+      data_zakonczenia: turniej.data_zakonczenia || '',
+      miejsce: turniej.miejsce || '',
+    };
+
+    const turniejChanged = JSON.stringify(turniejInfo) !== JSON.stringify(initialTurniej);
+
+    let meczeChanged = false;
+    for (const mecz of mecze) {
+      if (
+        mecz._data !== (mecz.data || '') ||
+        mecz._godzina !== (mecz.godzina || '') ||
+        mecz._miejsce !== (mecz.miejsce || '')
+      ) {
+        meczeChanged = true;
+        break;
+      }
+    }
+
+    if (!turniejChanged && !meczeChanged) {
+      setInfo('Zero zmian – nic nie zapisano');
+      return;
+    }
+
+    try {
+      if (turniejChanged) {
+        await fetch(`${API_URL}/api/turnieje/${id}/`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('access')}`,
           },
-          body: JSON.stringify({
-            data: mecz._data || null,
-            godzina: mecz._godzina || null,
-            miejsce: mecz._miejsce || null,
-          }),
+          body: JSON.stringify(turniejInfo),
         });
       }
-      setSuccess('Zapisano dane turnieju i mecze');
+
+      for (const mecz of mecze) {
+        if (
+          mecz._data !== (mecz.data || '') ||
+          mecz._godzina !== (mecz.godzina || '') ||
+          mecz._miejsce !== (mecz.miejsce || '')
+        ) {
+          await fetch(`${API_URL}/api/mecze/${mecz.id}/`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+            body: JSON.stringify({
+              data: mecz._data || null,
+              godzina: mecz._godzina || null,
+              miejsce: mecz._miejsce || null,
+            }),
+          });
+        }
+      }
+
+      setSuccess('Zapisano pomyślnie');
       await fetchMecze();
     } catch {
       setError('Błąd zapisu danych');
@@ -103,19 +143,20 @@ function TournamentDetailsPage() {
   };
 
   useEffect(() => {
-    fetchMecze();
     fetchTurniejInfo();
+    fetchMecze();
   }, [id]);
 
   useEffect(() => {
-    if (error || success) {
+    if (error || success || info) {
       const timeout = setTimeout(() => {
         setError(null);
         setSuccess(null);
+        setInfo(null);
       }, 3000);
       return () => clearTimeout(timeout);
     }
-  }, [error, success]);
+  }, [error, success, info]);
 
   const meczePoKolejce = {};
   mecze.forEach(m => {
@@ -128,10 +169,18 @@ function TournamentDetailsPage() {
     : meczePoKolejce;
 
   return (
-    <div>
+    <div className="page-container">
       <CreateTournamentBar />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+
+      {turniej && (
+        <h2 className="page-title">
+          Szczegóły turnieju <span className="tournament-name">| {turniej.nazwa} |</span>
+        </h2>
+      )}
+
+      <MessageBox message={error} type="error" />
+      <MessageBox message={success} type="success" />
+      <MessageBox message={info} type="info" />
 
       <TournamentActionButtons
         onSave={zapiszWszystko}
@@ -139,15 +188,7 @@ function TournamentDetailsPage() {
         nextStepPath={() => navigate(`/turniej/${id}/wyniki`)}
       />
 
-      <form
-        style={{
-          display: 'flex',
-          gap: '1em',
-          flexWrap: 'wrap',
-          marginBottom: '1em',
-          alignItems: 'center',
-        }}
-      >
+      <form className="tournament-info-section">
         <label>
           Data rozpoczęcia:
           <input

@@ -1,0 +1,133 @@
+:root {
+  --color-bg: #ffffff;
+  --color-box-bg: #f4f4f4;
+  --color-text: #213547;
+  --color-contrast: #ffffff;
+  
+  --color-primary: #646cff;
+  --color-primary-hover: #4c52cc;
+
+  --color-input-bg: #ffffff;
+  --color-input-text: #000000;
+  --color-input-border: #ccc;
+
+  --color-disabled: #ccc;
+
+  --color-success-bg: #ccffcc;
+  --color-success-text: #006600;
+  --color-success-border: #c3e6cb;
+
+  --color-error-bg: #ffcccc;
+  --color-error-text: #a10000;
+  --color-error-border: #f5c6cb;
+
+  --color-table-header-bg: #f4f4f4;
+  --color-table-row-hover: #f9f9f9;
+  --color-table-border: #ddd;
+}
+
+body.dark {
+  --color-bg: #242424;
+
+  --color-box-bg: #1c1c1c;
+  --color-text: #f0f0ff;
+  --color-contrast: #ffffff;
+
+  --color-primary: #8f8fff;
+  --color-primary-hover: #3a3fc2;
+
+  --color-input-bg: #2c2c2c;
+  --color-input-text: #ffffff;
+  --color-input-border: #555;
+
+  --color-disabled: #444;
+
+  --color-success-bg: #1d3c24;
+  --color-success-text: #c8f2d0;
+  --color-success-border: #3c8154;
+
+  --color-error-bg: #5a1a1a;
+  --color-error-text: #f1c4c4;
+  --color-error-border: #8e4444;
+
+  --color-table-header-bg: #444;
+  --color-table-row-hover: #555;
+  --color-table-border: #555;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  padding-top: 20px;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.page-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1em;
+  width: 100%;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+.tournament-name {
+  font-weight: bold;
+  color: #3b82f6;
+}
+
+.tournament-info-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  background-color: var(--color-box-bg);
+  border: 1px solid var(--color-primary);
+  padding: 1.2em;
+  border-radius: 10px;
+  margin-bottom: 1.5em;
+}
+
+.tournament-info-section label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.95em;
+  color: var(--color-text);
+}
+
+.tournament-info-section input {
+  margin-top: 0.3em;
+  padding: 0.4em 0.6em;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.history-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin: 0 2px;
+}
+
+.win { background-color: #4CAF50; }    /* zielony */
+.draw { background-color: #9E9E9E; }   /* szary */
+.loss { background-color: #F44336; }   /* czerwony */

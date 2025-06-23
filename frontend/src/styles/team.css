@@ -1,0 +1,88 @@
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
+.team-grid label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.3em;
+  color: var(--color-text);
+}
+
+.team-grid input {
+  width: 100%;
+  padding: 0.4em;
+  border-radius: 6px;
+  border: 1px solid var(--color-input-border);
+  font-size: 1em;
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
+}
+
+.team-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+}
+
+.team-form input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.4em;
+  border-radius: 6px;
+  border: 1px solid var(--color-input-border);
+  font-size: 1em;
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
+}
+
+.bracket-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 2rem;
+  padding: 1rem;
+  align-items: flex-start;
+}
+
+.bracket-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 150px;
+}
+
+.bracket-stage {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: #333;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.3rem;
+}
+
+.match {
+  background-color: #f0f0ff;
+  border-radius: 8px;
+  padding: 0.5rem;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.team {
+  padding: 0.3rem 0.4rem;
+  border-left: 4px solid transparent;
+}
+
+.team.winner {
+  font-weight: bold;
+  background-color: #d0ffd0;
+  border-left-color: #4caf50;
+}
+
+.team.loser {
+  color: #999;
+}

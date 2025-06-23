@@ -1,92 +1,101 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CreateTournamentBar from '../components/CreateTournamentBar';
+import '../styles/bracket.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
+const PUCHAR_ETAPY = ['1/32', '1/16', '1/8', 'Ćwierćfinał', 'Półfinał', 'Finał'];
 
-function BracketPage() {
+export default function BracketPage() {
   const { id } = useParams();
   const [mecze, setMecze] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [turniej, setTurniej] = useState(null);
 
   useEffect(() => {
-    const fetchMecze = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/api/mecze/?turniej=${id}`);
-        if (!res.ok) throw new Error('Nie udało się pobrać meczów');
-        const data = await res.json();
-        setMecze(data.filter(m => m.runda));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+    const fetchData = async () => {
+      const token = localStorage.getItem('access');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const res1 = await fetch(`${API_URL}/api/turnieje/${id}/`, { headers });
+      if (res1.ok) {
+        const turniejData = await res1.json();
+        setTurniej(turniejData);
+      }
+
+      const res2 = await fetch(`${API_URL}/api/mecze/?turniej=${id}`, { headers });
+      if (res2.ok) {
+        const meczeData = await res2.json();
+        setMecze(meczeData);
       }
     };
-    fetchMecze();
+    fetchData();
   }, [id]);
 
-  // Grupowanie meczów po rundach
-  const rundy = {};
-  mecze.forEach((mecz) => {
-    const runda = mecz.runda || 'Brak rundy';
-    if (!rundy[runda]) rundy[runda] = [];
-    rundy[runda].push(mecz);
-  });
+  const liczbaDruzyn = new Set(
+    mecze.flatMap(m => [m.druzyna_a, m.druzyna_b])
+  ).size;
 
-  // Sortowanie rund według logicznego porządku
-  const sortRundy = (a, b) => {
-    const kolej = ['1/8', '1/4', 'Ćwierćfinał', '1/2', 'Półfinał', 'Finał'];
-    const indexA = kolej.findIndex(k => a.toLowerCase().includes(k.toLowerCase()));
-    const indexB = kolej.findIndex(k => b.toLowerCase().includes(k.toLowerCase()));
-    return indexA - indexB;
-  };
-  const posortowaneRundy = Object.keys(rundy).sort(sortRundy);
+  const etapIndex = Math.max(
+    0,
+    PUCHAR_ETAPY.length - Math.ceil(Math.log2(liczbaDruzyn))
+  );
+  const etapyTurnieju = PUCHAR_ETAPY.slice(etapIndex);
 
-  return (
-    <div>
-      <CreateTournamentBar />
-      <h2>Drabinka turnieju</h2>
+  const meczePoEtapie = etapyTurnieju.reduce((acc, etap) => {
+    acc[etap] = mecze.filter(m => m.runda === etap);
+    return acc;
+  }, {});
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {loading && <p>Ładowanie...</p>}
-      {!loading && posortowaneRundy.length === 0 && <p>Brak meczów do wyświetlenia drabinki.</p>}
-
-      <div style={{ display: 'flex', gap: '2em', overflowX: 'auto', padding: '1em 0' }}>
-        {posortowaneRundy.map((runda, index) => (
-          <div key={index} style={{ minWidth: '200px' }}>
-            <h4
-              style={{
-                textAlign: 'center',
-                borderBottom: '2px solid #646cff',
-                marginBottom: '1em',
-              }}
-            >
-              {runda}
-            </h4>
-            {rundy[runda].map((mecz) => (
-              <div
-                key={mecz.id}
-                style={{
-                  background: '#222',
-                  padding: '0.5em',
-                  borderRadius: '8px',
-                  marginBottom: '1em',
-                  textAlign: 'center',
-                  boxShadow: '0 0 4px #000',
-                }}
-              >
-                <div>{mecz.druzyna_a_nazwa} ({mecz.wynik_a ?? '-'})</div>
-                <div>vs</div>
-                <div>{mecz.druzyna_b_nazwa} ({mecz.wynik_b ?? '-'})</div>
-              </div>
-            ))}
+  const renderMecze = (etap, meczeEtapu, isFinal = false) => (
+    <div className="bracket-column">
+      <h3>{etap}</h3>
+      {meczeEtapu.map(m => {
+        const isWinnerA = m.wynik_a > m.wynik_b;
+        const isWinnerB = m.wynik_b > m.wynik_a;
+        return (
+          <div key={m.id} className="bracket-match">
+            <div className={`team ${isWinnerA ? (isFinal ? 'final-winner' : 'winner') : ''}`}>
+              {m.druzyna_a_nazwa || m.druzyna_a} ({m.wynik_a ?? '-'})
+            </div>
+            <div className={`team ${isWinnerB ? (isFinal ? 'final-winner' : 'winner') : ''}`}>
+              {m.druzyna_b_nazwa || m.druzyna_b} ({m.wynik_b ?? '-'})
+            </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
-}
 
-export default BracketPage;
+  const splitMatches = (etap) => {
+    const matches = meczePoEtapie[etap] || [];
+    const half = Math.ceil(matches.length / 2);
+    return [matches.slice(0, half), matches.slice(half)];
+  };
+
+  return (
+    <>
+      <div className="page-container">
+        <CreateTournamentBar />
+        {turniej && (
+          <h2 className="page-title">
+            Drabinka turnieju <span className="tournament-name">| {turniej.nazwa} |</span>
+          </h2>
+        )}
+      </div>
+
+      <div className="bracket-flex">
+        <div className="bracket-side left">
+          {etapyTurnieju.slice(0, -1).reverse().map(etap => renderMecze(etap, splitMatches(etap)[0]))}
+        </div>
+
+        <div className="bracket-center">
+          {renderMecze('Finał', meczePoEtapie['Finał'] || [], true)}
+        </div>
+
+        <div className="bracket-side right">
+          {etapyTurnieju.slice(0, -1).reverse().map(etap => renderMecze(etap, splitMatches(etap)[1]))}
+        </div>
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,45 @@
+.main-table-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1em;
+}
+
+.main-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+  background: var(--color-box-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-table th,
+.main-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-table-border);
+  color: var(--color-text);
+}
+
+.main-table th {
+  background-color: var(--color-table-header-bg);
+  font-weight: bold;
+}
+
+.main-table tr:hover {
+  background-color: var(--color-table-row-hover);
+}
+
+.main-table button {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: opacity 0.2s ease;
+}
+
+.main-table button:hover {
+  opacity: 0.7;
+}

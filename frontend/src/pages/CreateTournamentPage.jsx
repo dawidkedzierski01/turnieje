@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CreateTournamentPage() {
+  const { id } = useParams();
   const [nazwa, setNazwa] = useState('');
   const [typ, setTyp] = useState('liga');
   const [liczba, setLiczba] = useState(4);
@@ -19,7 +20,6 @@ export default function CreateTournamentPage() {
 
   const handleSave = async () => {
     setError(null);
-
     const token = localStorage.getItem('access');
     if (!token) {
       navigate('/logowanie');
@@ -37,7 +37,6 @@ export default function CreateTournamentPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         const msg = data.detail || Object.values(data).flat().join(' ');
         throw new Error(msg);
@@ -60,21 +59,23 @@ export default function CreateTournamentPage() {
 
   useEffect(() => {
     if (error) {
-      const timeout = setTimeout(() => setError(null), 3000);
+      const timeout = setTimeout(() => {
+        setError(null);
+      }, 2000);
       return () => clearTimeout(timeout);
     }
   }, [error]);
 
   return (
-    <div>
+    <div className="page-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Tworzenie turnieju</h2>
 
-        {error ? (
-          <div style={{ color: 'red', marginBottom: '1em' }}>
+        {error && (
+          <div className="message-box error" role="alert">
             {error}
           </div>
-        ) : null}
+        )}
 
         <label>
           Nazwa:
@@ -120,8 +121,8 @@ export default function CreateTournamentPage() {
           )}
         </label>
 
-        <div style={{ marginTop: '1em' }}>
-          <button type="submit" className="bar-link">
+        <div className="form-actions">
+          <button type="submit" className="home-button">
             Utwórz i przejdź dalej
           </button>
         </div>

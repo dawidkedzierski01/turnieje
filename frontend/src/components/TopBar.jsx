@@ -18,8 +18,8 @@ function TopBar() {
   };
 
   return (
-    <nav className="bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div style={{ display: 'flex', gap: '1em' }}>
+    <nav className="bar top-bar">
+      <div className="top-bar-left">
         {topNav.map((item) => (
           <Link
             key={item.to}
@@ -31,7 +31,7 @@ function TopBar() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
+      <div className="top-bar-right">
         {isLoggedIn && (
           <button onClick={handleLogout} className="bar-link logout-button">
             Wyloguj się

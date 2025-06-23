@@ -29,11 +29,15 @@ class TurniejViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(wlasciciel=self.request.user)
 
-
 class DruzynaViewSet(viewsets.ModelViewSet):
-    queryset = Druzyna.objects.all()
     serializer_class = DruzynaSerializer
 
+    def get_queryset(self):
+        turniej_id = self.request.query_params.get('turniej')
+        queryset = Druzyna.objects.all()
+        if turniej_id:
+            queryset = queryset.filter(turniej__id=turniej_id)
+        return queryset
 
 @api_view(['POST'])
 def generuj_mecze(request, turniej_id):
@@ -126,7 +130,6 @@ def zatwierdz_kolejke(request, turniej_id):
     nastepna_liczba = aktualna_liczba // 2
     nowa_runda = RUNDY.get(nastepna_liczba, f'1/{nastepna_liczba}')
 
-    # Sprawdź, czy runda już istnieje i czy odpowiada tym parom
     istniejace = list(Mecz.objects.filter(turniej=turniej, runda=nowa_runda))
     if istniejace:
         istniejace_pary = sorted((min(m.druzyna_a.id, m.druzyna_b.id), max(m.druzyna_a.id, m.druzyna_b.id)) for m in istniejace)
@@ -135,7 +138,7 @@ def zatwierdz_kolejke(request, turniej_id):
         if istniejace_pary == nowe_pary:
             return Response({'message': 'Runda już istnieje i jest aktualna'}, status=200)
         else:
-            # Nadpisz błędną rundę
+
             for m in istniejace:
                 m.delete()
 

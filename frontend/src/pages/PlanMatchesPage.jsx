@@ -8,13 +8,18 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function PlanMatchesPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [mecze, setMecze] = useState([]);
   const [turniej, setTurniej] = useState(null);
   const [error, setError] = useState(null);
   const [generowane, setGenerowane] = useState(false);
   const [resetowane, setResetowane] = useState(false);
   const [filterKolejka, setFilterKolejka] = useState("");
-  const navigate = useNavigate();
+
+  const przejdzDoSzczegolow = () => {
+    navigate(`/turniej/${id}/szczegoly`);
+  };
 
   const handle401 = () => {
     localStorage.removeItem("access");
@@ -43,11 +48,12 @@ function PlanMatchesPage() {
     try {
       const [meczeRes, turniejRes] = await Promise.all([
         fetchWithAuth(`${API_URL}/api/mecze/?turniej=${id}`),
-        fetchWithAuth(`${API_URL}/api/turnieje/${id}/`)
+        fetchWithAuth(`${API_URL}/api/turnieje/${id}/`),
       ]);
 
       if (!meczeRes || !turniejRes) return;
-      if (!meczeRes.ok || !turniejRes.ok) throw new Error("Błąd pobierania danych");
+      if (!meczeRes.ok || !turniejRes.ok)
+        throw new Error("Błąd pobierania danych");
 
       const meczeData = await meczeRes.json();
       const turniejData = await turniejRes.json();
@@ -93,7 +99,8 @@ function PlanMatchesPage() {
           ? await res.json()
           : null;
 
-      if (!res.ok) throw new Error(data?.error || "Błąd podczas resetowania meczów");
+      if (!res.ok)
+        throw new Error(data?.error || "Błąd podczas resetowania meczów");
 
       await fetchData();
     } catch (err) {
@@ -106,6 +113,13 @@ function PlanMatchesPage() {
   useEffect(() => {
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    if (error) {
+      const timeout = setTimeout(() => setError(null), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [error]);
 
   const meczeGrupowane = useMemo(() => {
     return mecze.reduce((acc, mecz) => {
@@ -120,22 +134,22 @@ function PlanMatchesPage() {
   const kolejki = Object.keys(meczeGrupowane);
 
   return (
-    <div>
+    <div className="page-container">
       <CreateTournamentBar />
       <MessageBox message={error} type="error" />
 
       {turniej && (
-        <h2 style={{ margin: "1em 0", fontWeight: "bold" }}>
-          Planowanie meczów <span style={{ color: "#646cff" }}>| {turniej.nazwa} |</span>
+        <h2 className="page-title">
+          Planowanie meczów
+          <span className="tournament-name"> | {turniej.nazwa} |</span>
         </h2>
       )}
 
       <TournamentActionButtons
         onGenerate={generujMecze}
         onReset={resetujMecze}
-        saveLabel="Zapisz"
         nextStepLabel="Przejdź do szczegółów"
-        nextStepPath={() => navigate(`/turniej/${id}/szczegoly`)}
+        nextStepPath={przejdzDoSzczegolow}
       />
 
       <div style={{ marginBottom: "1em" }}>
@@ -151,7 +165,13 @@ function PlanMatchesPage() {
       {kolejki.length > 0 ? (
         kolejki.map((kolejka) => (
           <div key={kolejka} style={{ marginBottom: "1.5em" }}>
-            <h3 style={{ fontWeight: "bold", borderBottom: "2px solid #646cff", paddingBottom: "0.2em" }}>
+            <h3
+              style={{
+                fontWeight: "bold",
+                borderBottom: "2px solid #646cff",
+                paddingBottom: "0.2em",
+              }}
+            >
               Kolejka: {kolejka}
             </h3>
             <table className="main-table" style={{ marginTop: "0.5em" }}>

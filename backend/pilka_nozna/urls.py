@@ -10,9 +10,9 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r'turnieje', TurniejViewSet)
-router.register(r'druzyny', DruzynaViewSet)
-router.register(r'mecze', MeczViewSet)
+router.register(r'turnieje', TurniejViewSet, basename='turniej')
+router.register(r'druzyny', DruzynaViewSet, basename='druzyna')
+router.register(r'mecze', MeczViewSet, basename='mecz')
 
 urlpatterns = [
     path('', include(router.urls)),

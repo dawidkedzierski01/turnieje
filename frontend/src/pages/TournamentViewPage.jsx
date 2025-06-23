@@ -38,27 +38,35 @@ function TournamentViewPage() {
       .catch(() => setError("Błąd podczas pobierania danych."));
   }, [id]);
 
-  if (error) return <p>{error}</p>;
-  if (!turniej) return <p>Ładowanie...</p>;
+  if (error) return <div className="page-container"><p style={{ color: 'red' }}>{error}</p></div>;
+  if (!turniej) return <div className="page-container"><p>Ładowanie...</p></div>;
 
   return (
-    <div>
-      <h1>Podgląd turnieju: {turniej.nazwa}</h1>
+    <div className="page-container">
+      <h2 className="page-title">
+        Podgląd turnieju
+        <span className="tournament-name"> | {turniej.nazwa} |</span>
+      </h2>
+
       <p><strong>Typ:</strong> {turniej.typ}</p>
       <p><strong>Liczba drużyn:</strong> {turniej.liczba_druzyn}</p>
       <p><strong>Data rozpoczęcia:</strong> {turniej.data_rozpoczecia || '–'}</p>
       <p><strong>Data zakończenia:</strong> {turniej.data_zakonczenia || '–'}</p>
       <p><strong>Miejsce:</strong> {turniej.miejsce || '–'}</p>
 
-      <h2>Drużyny</h2>
-      {druzyny.length === 0 ? <p>Brak drużyn.</p> : (
+      <h3>Drużyny</h3>
+      {druzyny.length === 0 ? (
+        <p>Brak drużyn.</p>
+      ) : (
         <ul>
           {druzyny.map(d => <li key={d.id}>{d.nazwa}</li>)}
         </ul>
       )}
 
-      <h2>Mecze</h2>
-      {mecze.length === 0 ? <p>Brak meczów.</p> : (
+      <h3>Mecze</h3>
+      {mecze.length === 0 ? (
+        <p>Brak meczów.</p>
+      ) : (
         <table className="main-table">
           <thead>
             <tr>

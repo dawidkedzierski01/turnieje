@@ -1,38 +1,70 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import TournamentActionButtons from '../components/TournamentActionButtons';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function LeagueTablePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [mecze, setMecze] = useState(null);
+  const [turniej, setTurniej] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchMecze = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/mecze/?turniej=${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`,
-          },
-        });
-        if (!res.ok) throw new Error('Błąd pobierania meczów');
-        const data = await res.json();
-        setMecze(data);
+        const [resMecze, resTurniej] = await Promise.all([
+          fetch(`${API_URL}/api/mecze/?turniej=${id}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+          }),
+          fetch(`${API_URL}/api/turnieje/${id}/`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+          }),
+        ]);
+
+        if (!resMecze.ok || !resTurniej.ok) throw new Error('Błąd pobierania danych');
+
+        const dataMecze = await resMecze.json();
+        const dataTurniej = await resTurniej.json();
+
+        setMecze(dataMecze);
+        setTurniej(dataTurniej);
       } catch (err) {
         setError(err.message);
       }
     };
 
-    fetchMecze();
+    fetchAll();
   }, [id]);
 
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (!mecze) return <p>Ładowanie danych...</p>;
+  if (!mecze || !turniej) return <p>Ładowanie danych...</p>;
 
   return (
-    <div>
-      <h1>Tabela wyników</h1>
+    <div className="page-container">
+      <h2 className="page-title">
+        Tabela wyników <span className="tournament-name">| {turniej.nazwa} |</span>
+      </h2>
+
+      <TournamentActionButtons
+        customButtons={[
+          {
+            label: 'Przejdź do modułu wyników',
+            onClick: () => navigate(`/turniej/${id}/wyniki`),
+          },
+          {
+            label: 'Przejdź do listy turniejów',
+            onClick: () => navigate('/lista-turniejow'),
+          },
+        ]}
+      />
+
       <LeagueTable mecze={mecze} />
     </div>
   );
@@ -48,14 +80,8 @@ function LeagueTable({ mecze }) {
   const stats = Object.entries(teams).map(([id, nazwa]) => ({
     id,
     nazwa,
-    M: 0,
-    W: 0,
-    D: 0,
-    L: 0,
-    GF: 0,
-    GA: 0,
-    GD: 0,
-    P: 0,
+    M: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, P: 0,
+    history: [],
   }));
 
   const statsMap = {};
@@ -79,15 +105,21 @@ function LeagueTable({ mecze }) {
       teamA.W++;
       teamB.L++;
       teamA.P += 3;
+      teamA.history.push('W');
+      teamB.history.push('L');
     } else if (m.wynik_a === m.wynik_b) {
       teamA.D++;
       teamB.D++;
       teamA.P += 1;
       teamB.P += 1;
+      teamA.history.push('D');
+      teamB.history.push('D');
     } else {
       teamB.W++;
       teamA.L++;
       teamB.P += 3;
+      teamB.history.push('W');
+      teamA.history.push('L');
     }
   });
 
@@ -115,6 +147,7 @@ function LeagueTable({ mecze }) {
           <th>GA</th>
           <th>+/-</th>
           <th>Pkt</th>
+          <th>Ostatnie 5</th>
         </tr>
       </thead>
       <tbody>
@@ -130,6 +163,15 @@ function LeagueTable({ mecze }) {
             <td>{t.GA}</td>
             <td>{t.GD}</td>
             <td><strong>{t.P}</strong></td>
+              <td>
+              {t.history.slice(-5).map((res, i) => {
+                let className = '';
+                if (res === 'W') className = 'win';
+                else if (res === 'D') className = 'draw';
+                else if (res === 'L') className = 'loss';
+                return <span key={i} className={`history-dot ${className}`}></span>;
+              })}
+            </td>
           </tr>
         ))}
       </tbody>

@@ -1,0 +1,83 @@
+.bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  background: var(--color-box-bg);
+  padding: 10px 20px;
+  margin: 0 auto;
+  border-radius: 10px;
+  max-width: 960px;
+  flex-wrap: wrap;
+}
+
+.top-bar-left {
+  display: flex;
+  gap: 1em;
+}
+
+.top-bar-right {
+  margin-left: auto;
+}
+
+.bar-link {
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  background-color: transparent;
+  white-space: nowrap;
+}
+
+.bar-link:hover {
+  background-color: var(--color-primary-hover);
+  color: var(--color-contrast);
+}
+
+.bar-link.aktywny {
+  background: var(--color-primary);
+  color: var(--color-contrast);
+}
+
+.step-bar,
+.tournament-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+  justify-content: flex-start;
+  margin: 0 0 1em 0;
+}
+
+.step-link,
+.tournament-actions button {
+  padding: 0.5em 1.2em;
+  background-color: var(--color-box-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.step-link:hover,
+.tournament-actions button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-contrast);
+  border-color: var(--color-primary-hover);
+}
+
+.step-link.aktywny {
+  background-color: var(--color-primary);
+  color: var(--color-contrast);
+  border-color: var(--color-primary-hover);
+}
+
+.step-link.nastepny {
+  background-color: rgba(100, 108, 255, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
